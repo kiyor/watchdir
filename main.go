@@ -6,7 +6,7 @@
 
 * Creation Date : 07-25-2016
 
-* Last Modified : Mon 25 Jul 2016 05:41:42 PM PDT
+* Last Modified : Wed 14 Sep 2016 04:51:09 AM UTC
 
 * Created By : Kiyor
 
@@ -47,9 +47,9 @@ func main() {
 	go watch(chAdd, chDel)
 	err := filepath.Walk(*dir, func(path string, f os.FileInfo, err error) error {
 		if err != nil {
-			return err
-		}
-		if f.IsDir() {
+			log.Println(err.Error())
+			// 			return err
+		} else if f.IsDir() {
 			chAdd <- path
 		}
 		return nil
@@ -75,7 +75,8 @@ func watch(chAdd, chDel chan string) {
 				if event.Op == fsnotify.Create {
 					f, err := os.Stat(event.Name)
 					if err != nil {
-						panic(err)
+						log.Println("error", err.Error())
+						continue
 					}
 					if f.IsDir() {
 						chAdd <- event.Name
